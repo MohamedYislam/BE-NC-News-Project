@@ -14,7 +14,17 @@ beforeEach(() => {
 describe(' GET /api/topics', () => {
     test('returns a status 200', () => {
         return request(app)
-        .get('/api/treasures')
-        .expect(404)  
-    })
+        .get('/api/topics')
+        .expect(200)
+        .then(({body : topics}) => {
+            topics.forEach((topic) => {
+                expect(topic).toEqual(
+                    expect.objectContaining({
+                        slug: expect.any(String),
+                        description: expect.any(String)
+                    })
+                );
+            });
+        });
+    });
 })
