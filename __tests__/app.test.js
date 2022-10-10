@@ -12,11 +12,14 @@ beforeEach(() => {
 })
 
 describe(' GET /api/topics', () => {
-    test('returns a status 200', () => {
+    test('returns a status 200 and an array of topics', () => {
         return request(app)
         .get('/api/topics')
         .expect(200)
-        .then(({body : topics}) => {
+        .then(({ body }) => {
+        const { topics } = body
+        expect(topics).toBeInstanceOf(Array);
+        expect(topics).toHaveLength(3);
             topics.forEach((topic) => {
                 expect(topic).toEqual(
                     expect.objectContaining({
@@ -28,3 +31,4 @@ describe(' GET /api/topics', () => {
         });
     });
 })
+
