@@ -1,5 +1,7 @@
-const db = require('../db')
+const db = require('../db/connection.js')
 
-exports.selectTreasures = () => {
-    return 0;
+exports.selectTopics = () => {
+    return db.query(`SELECT * FROM topics;`).then(({ rows }) => {
+        return rows
+    })
 }
