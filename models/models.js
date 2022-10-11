@@ -1,7 +1,8 @@
 const db = require('../db/connection.js')
 
 exports.selectTopics = () => {
-    return db.query(`SELECT * FROM topics;`).then(({ rows }) => {
+    return db.query(`SELECT * FROM topics;`)
+    .then(({ rows }) => {
         return rows
     })
 }
@@ -14,5 +15,8 @@ exports.selectArticleById = (article_id) => {
 }
 
 exports.selectUsers = () => {
-    
+    return db.query(`SELECT * FROM users;`)
+    .then(({ rows }) => {
+        return rows
+    })
 }
