@@ -7,8 +7,9 @@ exports.getTopics = (req, res) => {
 }
 
 exports.getArticleById = (req, res) => {
-    console.log(req.params, "<req.params")
     const { article_id } = req.params
-    selectArticleById(article_id)
-    res.send({msg: 'test'})
+    selectArticleById(article_id).then((article) => {
+        res.send({article})
+    })
+    
 }
