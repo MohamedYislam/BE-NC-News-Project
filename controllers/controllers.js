@@ -14,8 +14,7 @@ exports.getArticleById = (req, res) => {
 }
 
 exports.getUsers = (req, res) => {
-    console.log("inside the controller")
     selectUsers().then((users) => {
-        res.send({users})
+        res.status(200).send({users})
     })    
 }
