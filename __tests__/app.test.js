@@ -11,8 +11,8 @@ beforeEach(() => {
     return seed(testData)
 })
 
-describe(' GET /api/topics', () => {
-    test('returns a status 200 and an array of topics', () => {
+describe('GET /api/topics', () => {
+    test('status 200: responds with an array of topic objects', () => {
         return request(app)
         .get('/api/topics')
         .expect(200)
@@ -32,3 +32,11 @@ describe(' GET /api/topics', () => {
     });
 })
 
+describe('GET /api/articles/:article_id', () => {
+    test('status:200, responds with a single matching article', () => {
+        const article_id = 2
+        return request(app)
+            .get(`/api/articles/${article_id}`)
+            .expect(200)
+    })
+})
