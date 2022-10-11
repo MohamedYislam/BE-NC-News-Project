@@ -34,9 +34,23 @@ describe('GET /api/topics', () => {
 
 describe('GET /api/articles/:article_id', () => {
     test('status:200, responds with a single matching article', () => {
-        const article_id = 2
+        const article_id = 1
         return request(app)
-            .get(`/api/articles/${article_id}`)
-            .expect(200)
+        .get(`/api/articles/${article_id}`)
+        .expect(200)
+        .then(({ body }) => {
+            const { article } = body;
+            console.log(article, "<article __")
+            expect(article).toBeInstanceOf(Object)
+            expect(article).toEqual({
+                'article_id': article_id,
+                title: 'Living in the shadow of a great man',
+                topic: 'mitch',
+                author: 'butter_bridge',
+                'body': 'I find this existence challenging',
+                created_at: '2020-07-09T17:11:00.000Z',
+                votes : 100
+            })
+        })
     })
 })
