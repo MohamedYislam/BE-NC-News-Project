@@ -40,7 +40,6 @@ describe('GET /api/articles/:article_id', () => {
         .expect(200)
         .then(({ body }) => {
             const { article } = body;
-            console.log(article, "<article __")
             expect(article).toBeInstanceOf(Object)
             expect(article).toEqual({
                 'article_id': article_id,
