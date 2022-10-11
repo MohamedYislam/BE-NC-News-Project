@@ -11,5 +11,8 @@ exports.getArticleById = (req, res) => {
     selectArticleById(article_id).then((article) => {
         res.send({article})
     })
+}
+
+exports.getUsers = (req, res) => {
     
 }
