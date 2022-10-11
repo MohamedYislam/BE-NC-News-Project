@@ -1,4 +1,4 @@
-const { selectTopics, selectArticleById } = require('../models/models.js')
+const { selectTopics, selectArticleById, selectUsers } = require('../models/models.js')
 
 exports.getTopics = (req, res) => {
     selectTopics().then((topics) => {
@@ -14,5 +14,5 @@ exports.getArticleById = (req, res) => {
 }
 
 exports.getUsers = (req, res) => {
-    
+    selectUsers()
 }
