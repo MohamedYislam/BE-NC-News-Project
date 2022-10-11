@@ -40,7 +40,6 @@ describe('GET /api/articles/:article_id', () => {
         .expect(200)
         .then(({ body }) => {
             const { article } = body;
-            expect(article).toBeInstanceOf(Object)
             expect(article).toEqual({
                 'article_id': article_id,
                 title: 'Living in the shadow of a great man',
