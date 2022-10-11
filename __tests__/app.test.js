@@ -74,3 +74,25 @@ describe('GET /api/users', () => {
         });
     });
 })
+
+describe('PATCH /api/articles/:article_id', () => {
+    test('status:200 responds with an updated article', () => {
+        const articleUpdates = { inc_votes : 5 };
+        ArticleID = 1
+        return request(app)
+        .patch(`/api/articles/${ArticleID}`)
+        .send(articleUpdates)
+        .expect(200)
+        .then(({body}) => {
+            expect(body.article).toEqual({
+                article_id: 1,
+                title: 'Living in the shadow of a great man',
+                topic: 'mitch',
+                author: 'butter_bridge',
+                body: 'I find this existence challenging',
+                created_at: '2020-07-09T17:11:00.000Z',
+                votes: 105
+            })
+        })
+    })
+})
