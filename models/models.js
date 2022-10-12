@@ -23,8 +23,7 @@ exports.selectUsers = () => {
 }
 
 exports.updateArticleById = (article_id, inc_votes) => {
-    
-    if (!inc_votes || typeof inc_votes !== "number") {
+    if (typeof inc_votes !== "number") {
          return Promise.reject({ status: 400, msg: 'bad request, object sent may be invalid'});
     }
     return db.query(`
