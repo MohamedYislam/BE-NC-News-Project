@@ -1,4 +1,4 @@
-const { selectTopics, selectArticleById, selectUsers } = require('../models/models.js')
+const { selectTopics, selectArticleById, selectUsers, updateArticleById } = require('../models/models.js')
 
 exports.getTopics = (req, res) => {
     selectTopics().then((topics) => {
@@ -6,10 +6,14 @@ exports.getTopics = (req, res) => {
     })
 }
 
-exports.getArticleById = (req, res) => {
+exports.getArticleById = (req, res, next) => {
     const { article_id } = req.params
     selectArticleById(article_id).then((article) => {
         res.status(200).send({article})
+    })
+    .catch((err) => {
+        console.log(err.code, "<err.code")
+        next(err)
     })
 }
 
@@ -17,4 +21,16 @@ exports.getUsers = (req, res) => {
     selectUsers().then((users) => {
         res.status(200).send({users})
     })    
+}
+
+exports.patchArticleById = (req, res, next) => {
+    const { article_id } = req.params
+    const { inc_votes } = req.body;
+    updateArticleById(article_id, inc_votes)
+    .then((article) => {
+        res.status(200).send({article})
+    })
+    .catch((err) => {
+        next(err);
+    })
 }
