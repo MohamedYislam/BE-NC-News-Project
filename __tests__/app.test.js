@@ -32,7 +32,7 @@ describe('GET /api/topics', () => {
     });
 })
 
-describe.only('GET /api/articles/:article_id', () => {
+describe('GET /api/articles/:article_id', () => {
     test('status:200, responds with a single matching article', () => {
         return request(app)
         .get(`/api/articles/1`)
@@ -47,16 +47,6 @@ describe.only('GET /api/articles/:article_id', () => {
                 'body': 'I find this existence challenging',
                 created_at: '2020-07-09T17:11:00.000Z',
                 votes : 100
-            })
-        })
-    })
-    describe('ERROR handling', () => {
-        test('status: 400,  Path Is Invalid', () => {
-            return request(app)
-            .get('/api/articles/one')
-            .expect(400)
-            .then(({body : error}) => {
-                expect(error).toEqual({message: 'Path is invalid'})
             })
         })
     })
@@ -126,11 +116,32 @@ describe('PATCH /api/articles/:article_id', () => {
         test('status: 400 bad request when invalid body is sent', () => {
             return request(app)
             .patch(`/api/articles/1`)
+            .send({increase_votes: 7})
             .expect(400)
             .then((response) => {
                 const { msg } = response.body;
                 expect(msg).toBe('bad request, object sent may be invalid');
             });
         });
+        test('status: 400 bad request when invalid body is sent', () => {
+            return request(app)
+            .patch(`/api/articles/1`)
+            .send({inc_votes: 'seven'})
+            .expect(400)
+            .then((response) => {
+                const { msg } = response.body;
+                expect(msg).toBe('bad request, object sent may be invalid');
+            });
+        });
+        test.only('status: 404 when user tries to patch invalid article', () => {
+            return request(app)
+            .patch(`/api/articles/77777`)
+            .send({inc_votes: 1})
+            .expect(404)
+            .then((response) => {
+                const { msg } = response.body;
+                expect(msg).toBe('Article does not exist');
+            });
+        })
     });
 })
