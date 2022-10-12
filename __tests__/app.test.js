@@ -133,7 +133,7 @@ describe('PATCH /api/articles/:article_id', () => {
                 expect(msg).toBe('bad request, object sent may be invalid');
             });
         });
-        test.only('status: 404 when user tries to patch invalid article', () => {
+        test('status: 404 when user tries to patch invalid article', () => {
             return request(app)
             .patch(`/api/articles/77777`)
             .send({inc_votes: 1})
