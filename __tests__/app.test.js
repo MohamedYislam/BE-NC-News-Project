@@ -135,6 +135,16 @@ describe('PATCH /api/articles/:article_id', () => {
         });
         test('status: 404 when user tries to patch invalid article', () => {
             return request(app)
+            .patch(`/api/articles/seven`)
+            .send({inc_votes: 1})
+            .expect(400)
+            .then((response) => {
+                const { msg } = response.body;
+                expect(msg).toBe('Invalid article id');
+            });
+        })
+        test('status: 404 when user tries to patch invalid article', () => {
+            return request(app)
             .patch(`/api/articles/77777`)
             .send({inc_votes: 1})
             .expect(404)
