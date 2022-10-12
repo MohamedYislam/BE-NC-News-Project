@@ -50,6 +50,16 @@ describe.only('GET /api/articles/:article_id', () => {
             })
         })
     })
+    describe('ERROR handling', () => {
+        test('status: 400,  Path Is Invalid', () => {
+            return request(app)
+            .get('/api/articles/one')
+            .expect(400)
+            .then(({body : error}) => {
+                expect(error).toEqual({message: 'Path is invalid'})
+            })
+        })
+    })
 })
 
 describe('GET /api/users', () => {
