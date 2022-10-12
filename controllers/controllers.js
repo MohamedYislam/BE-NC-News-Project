@@ -6,10 +6,14 @@ exports.getTopics = (req, res) => {
     })
 }
 
-exports.getArticleById = (req, res) => {
+exports.getArticleById = (req, res, next) => {
     const { article_id } = req.params
     selectArticleById(article_id).then((article) => {
         res.status(200).send({article})
+    })
+    .catch((err) => {
+        console.log(err.code, "<err.code")
+        next(err)
     })
 }
 
@@ -19,11 +23,14 @@ exports.getUsers = (req, res) => {
     })    
 }
 
-exports.patchArticleById = (req, res) => {
+exports.patchArticleById = (req, res, next) => {
     const { article_id } = req.params
     const { inc_votes } = req.body;
     updateArticleById(article_id, inc_votes)
     .then((article) => {
         res.status(200).send({article})
+    })
+    .catch((err) => {
+        next(err);
     })
 }
