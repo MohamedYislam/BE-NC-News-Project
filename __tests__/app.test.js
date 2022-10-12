@@ -72,8 +72,8 @@ describe('GET /api/articles/:article_id', () => {
             })
         })
     })
-    describe.only('ERROR Handling', () => {
-        test('status: 404 when user tries to request invalid article', () => {
+    describe('ERROR Handling', () => {
+        test('status: 400 when user tries to request invalid article id', () => {
             return request(app)
             .get(`/api/articles/seven`)
             .expect(400)
@@ -82,15 +82,15 @@ describe('GET /api/articles/:article_id', () => {
                 expect(msg).toBe('Invalid article id');
             });
         })
-        // test.only('status: 404 when user tries to patch invalid article', () => {
-        //     return request(app)
-        //     .get(`/api/articles/77777`)
-        //     .expect(404)
-        //     .then((response) => {
-        //         const { msg } = response.body;
-        //         expect(msg).toBe('Article does not exist');
-        //     });
-        // })
+        test('status: 404 when user tries to request an article that does not exist', () => {
+            return request(app)
+            .get(`/api/articles/77777`)
+            .expect(404)
+            .then((response) => {
+                const { msg } = response.body;
+                expect(msg).toBe('Article does not exist');
+            });
+        })
 
     })
 })
@@ -176,7 +176,7 @@ describe('PATCH /api/articles/:article_id', () => {
                 expect(msg).toBe('bad request, object sent may be invalid');
             });
         });
-        test('status: 404 when user tries to patch invalid article', () => {
+        test('status: 400 when user tries to patch invalid article id', () => {
             return request(app)
             .patch(`/api/articles/seven`)
             .send({inc_votes: 1})
@@ -186,7 +186,7 @@ describe('PATCH /api/articles/:article_id', () => {
                 expect(msg).toBe('Invalid article id');
             });
         })
-        test('status: 404 when user tries to patch invalid article', () => {
+        test('status: 404 when user tries to patch an article that does not exist', () => {
             return request(app)
             .patch(`/api/articles/77777`)
             .send({inc_votes: 1})
@@ -198,27 +198,3 @@ describe('PATCH /api/articles/:article_id', () => {
         })
     });
 })
-
-// describe('GET', () => {
-//     describe('/api/articles/:article_id (comment count)', () => {
-//         test('status 200: responds with the comment count of an article_id', () => {
-//             return request(app)
-//             .get('/api/articles/1')
-//             .expect(200)
-//             // .then(({ body }) => {
-//             // const { users } = body
-//             // expect(users).toBeInstanceOf(Array);
-//             // expect(users).toHaveLength(4);
-//             //     users.forEach((user) => {
-//             //         expect(user).toEqual(
-//             //             expect.objectContaining({
-//             //                 username: expect.any(String),
-//             //                 name: expect.any(String),
-//             //                 avatar_url: expect.any(String)
-//             //             })
-//             //         );
-//             //     });
-//             // });
-//         });
-//     })
-// })
