@@ -225,6 +225,8 @@ describe('GET', () => {
                 });
             });
         });
+    })
+    describe('Query', () => {
         test("Default order is by date descending", () => {
             return request(app)
             .get('/api/articles')
@@ -232,6 +234,40 @@ describe('GET', () => {
                 .then(({ body: { articles } }) => {
                 expect(articles).toBeSortedBy('created_at', { descending: true })
             });
+        })
+        test("Query filter by topic", () => {
+            return request(app)
+            .get('/api/articles?topic=mitch')
+            .expect(200)
+            .then(({ body: { articles } }) => {
+                expect(articles).toBeInstanceOf(Array);
+                articles.forEach((article) => {
+                    expect(articles).toHaveLength(11)
+                    expect(article).toEqual(
+                        expect.objectContaining({
+                            article_id: expect.any(Number),
+                            title: expect.any(String),
+                            topic: 'mitch',
+                            author: expect.any(String),
+                            body: expect.any(String),
+                            created_at: expect.any(String),
+                            votes: expect.any(Number),
+                            count: expect.any(Number)
+                        })
+                    );
+                });
+            })
         })    
+    })
+    describe('ERROR Handling', () => {
+        test('Invalid topic filter', () => {
+            return request(app)
+            .get('/api/articles?topic=RANDOM')
+            .expect(404)
+            .then((response) => {
+                const { msg } = response.body;
+                expect(msg).toBe('topic not found');
+            });
+        })
     })
 })
