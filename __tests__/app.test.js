@@ -346,21 +346,17 @@ describe('GET', () => {
 //     describe('/api/articles/:article_id/comments', () => {
 //         test('status: 201, responds with the posted comment', () => {
 //             const newComment =   {
+//                 username: "user1",
 //                 body: "From God we came and to Him we return",
-//                 votes: 1,
-//                 author: "userName",
-//                 article_id: 9,
-//                 created_at: 1584205320000,
 //             }
 //             return request(app)
-//             .post('/api/articles/:article_id/comments')
+//             .post('/api/articles/1/comments')
 //             .send(newComment)
 //             .expect(201)
 //             .then((result) => {
-//                 console.log(result, "<--result")
+//                 console.log(result, "<--result in test")
 //             })
 //         })
-
 
 //     })
 //     // updates database  test
