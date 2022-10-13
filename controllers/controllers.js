@@ -46,10 +46,7 @@ exports.getArticles = (req, res, next) => {
 exports.getArticleIdComments = (req, res, next) => {
     const { article_id } = req.params
 
-    console.log(req, '<req')
-    console.log('inside controller')
     selectArticleIdComments(article_id).then((comments) => {
-        console.log(comments, 'InsideController')
         res.status(200).send(comments)
     })
     .catch((err) => {
