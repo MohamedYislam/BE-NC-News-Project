@@ -9,9 +9,15 @@ exports.selectTopics = () => {
 }
 
 exports.selectArticleById = (article_id) => {
-    return db.query(`SELECT * FROM articles WHERE article_id = $1;`, [article_id])
-    .then(({rows : article}) => {
-        return article[0]
+    const promiseOne = db.query(`SELECT * FROM articles WHERE article_id = $1;`, [article_id])
+    const promiseTwo = db.query(`SELECT COUNT(*)::INTEGER FROM comments
+    WHERE article_id = $1;`, [article_id])
+    return Promise.all([promiseOne, promiseTwo])
+    .then(([{rows: article}, {rows: count}]) => {
+        if(article.length === 0) {
+            return Promise.reject({ status : 404, msg: 'Article does not exist'}) 
+        }
+        return {...article[0], ...count[0]}
     })
 }
 

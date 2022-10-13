@@ -33,22 +33,65 @@ describe('GET /api/topics', () => {
 })
 
 describe('GET /api/articles/:article_id', () => {
-    test('status:200, responds with a single matching article', () => {
-        return request(app)
-        .get(`/api/articles/1`)
-        .expect(200)
-        .then(({ body }) => {
-            const { article } = body;
-            expect(article).toEqual({
-                'article_id': 1,
-                title: 'Living in the shadow of a great man',
-                topic: 'mitch',
-                author: 'butter_bridge',
-                'body': 'I find this existence challenging',
-                created_at: '2020-07-09T17:11:00.000Z',
-                votes : 100
+    describe('/api/articles/:article_id', () => {
+        test('status:200, responds with a single matching article', () => {
+            return request(app)
+            .get(`/api/articles/1`)
+            .expect(200)
+            .then(({ body }) => {
+                const { article } = body;
+                expect(article).toEqual({
+                    'article_id': 1,
+                    title: 'Living in the shadow of a great man',
+                    topic: 'mitch',
+                    author: 'butter_bridge',
+                    'body': 'I find this existence challenging',
+                    created_at: '2020-07-09T17:11:00.000Z',
+                    votes : 100,
+                    count: 11
+                })
+                
             })
         })
+        test('status:200, more tests', () => {
+            return request(app)
+            .get(`/api/articles/3`)
+            .expect(200)
+            .then(({ body }) => {
+                const { article } = body;
+                expect(article).toEqual({
+                    article_id: 3,
+                    title: 'Eight pug gifs that remind me of mitch',
+                    topic: 'mitch',
+                    author: 'icellusedkars',
+                    body: 'some gifs',
+                    created_at: '2020-11-03T05:12:00.000Z',
+                    votes: 0,
+                    count: 2
+                })
+            })
+        })
+    })
+    describe('ERROR Handling', () => {
+        test('status: 400 when user tries to request invalid article id', () => {
+            return request(app)
+            .get(`/api/articles/seven`)
+            .expect(400)
+            .then((response) => {
+                const { msg } = response.body;
+                expect(msg).toBe('Invalid article id');
+            });
+        })
+        test('status: 404 when user tries to request an article that does not exist', () => {
+            return request(app)
+            .get(`/api/articles/77777`)
+            .expect(404)
+            .then((response) => {
+                const { msg } = response.body;
+                expect(msg).toBe('Article does not exist');
+            });
+        })
+
     })
 })
 
@@ -133,7 +176,7 @@ describe('PATCH /api/articles/:article_id', () => {
                 expect(msg).toBe('bad request, object sent may be invalid');
             });
         });
-        test('status: 404 when user tries to patch invalid article', () => {
+        test('status: 400 when user tries to patch invalid article id', () => {
             return request(app)
             .patch(`/api/articles/seven`)
             .send({inc_votes: 1})
@@ -143,7 +186,7 @@ describe('PATCH /api/articles/:article_id', () => {
                 expect(msg).toBe('Invalid article id');
             });
         })
-        test('status: 404 when user tries to patch invalid article', () => {
+        test('status: 404 when user tries to patch an article that does not exist', () => {
             return request(app)
             .patch(`/api/articles/77777`)
             .send({inc_votes: 1})
