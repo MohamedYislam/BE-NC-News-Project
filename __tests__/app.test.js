@@ -77,8 +77,7 @@ describe('GET /api/articles/:article_id', () => {
             return request(app)
             .get(`/api/articles/seven`)
             .expect(400)
-            .then((response) => {
-                const { msg } = response.body;
+            .then(({ body: {msg} }) => {
                 expect(msg).toBe('Invalid article id');
             });
         })
@@ -86,12 +85,10 @@ describe('GET /api/articles/:article_id', () => {
             return request(app)
             .get(`/api/articles/77777`)
             .expect(404)
-            .then((response) => {
-                const { msg } = response.body;
+            .then(({ body: {msg} }) => {
                 expect(msg).toBe('Article does not exist');
             });
         })
-
     })
 })
 
@@ -161,8 +158,7 @@ describe('PATCH /api/articles/:article_id', () => {
             .patch(`/api/articles/1`)
             .send({increase_votes: 7})
             .expect(400)
-            .then((response) => {
-                const { msg } = response.body;
+            .then(({ body: {msg} }) => {
                 expect(msg).toBe('bad request, object sent may be invalid');
             });
         });
@@ -171,8 +167,7 @@ describe('PATCH /api/articles/:article_id', () => {
             .patch(`/api/articles/1`)
             .send({inc_votes: 'seven'})
             .expect(400)
-            .then((response) => {
-                const { msg } = response.body;
+            .then(({ body: {msg} }) => {
                 expect(msg).toBe('bad request, object sent may be invalid');
             });
         });
@@ -181,8 +176,7 @@ describe('PATCH /api/articles/:article_id', () => {
             .patch(`/api/articles/seven`)
             .send({inc_votes: 1})
             .expect(400)
-            .then((response) => {
-                const { msg } = response.body;
+            .then(({ body: {msg} }) => {
                 expect(msg).toBe('Invalid article id');
             });
         })
@@ -267,6 +261,82 @@ describe('GET', () => {
             .then((response) => {
                 const { msg } = response.body;
                 expect(msg).toBe('topic not found');
+            });
+        })
+    })
+})
+
+describe('GET', () => {
+    describe('/api/articles/:article_id/comments', () => {
+        test('status: 200 responds with an array of al the comments of the article_id', () => {
+            return request(app)
+            .get('/api/articles/3/comments')
+            .expect(200)
+            .then(({ body: comments }) => {
+                expect(comments).toBeInstanceOf(Array);
+                expect(comments).toEqual([
+                    {
+                        comment_id: 10,
+                        body: 'git push origin master',
+                        article_id: 3,
+                        author: 'icellusedkars',
+                        votes: 0,
+                        created_at: '2020-06-20T04:24:00.000Z'
+                    },
+                    {
+                        comment_id: 11,
+                        body: 'Ambidextrous marsupial',
+                        article_id: 3,
+                        author: 'icellusedkars',
+                        votes: 0,
+                        created_at: '2020-09-19T20:10:00.000Z'
+                    }
+                ])
+            })
+        })
+        test('status: 200, more Tests', () => {
+            return request(app)
+            .get('/api/articles/1/comments')
+            .expect(200)
+            .then(({ body: comments }) => {
+                expect(comments).toBeInstanceOf(Array);
+                expect(comments).toHaveLength(11)
+                comments.forEach((comment) => {
+                    expect.objectContaining({
+                        comment_id: expect.any(Number),
+                        votes: expect.any(Number),
+                        created_at: expect.any(Number),
+                        author: expect.any(String),
+                        body: expect.any(String)
+                    })
+                })
+            })
+        })
+        test('status: 200 when the article has no comments returns empty array', () => {
+            return request(app)
+            .get('/api/articles/4/comments')            
+            .expect(200)
+            .then(({ body: comments }) => {
+                expect(comments).toBeInstanceOf(Array);
+                expect(comments).toHaveLength(0)
+            });
+        })
+    })
+    describe('ERROR Handling', () => {
+        test('status: 400 when user tries to find comments of an invalid article id', () => {
+            return request(app)
+            .get('/api/articles/One/comments')            
+            .expect(400)
+            .then(({ body: {msg} }) => {
+                expect(msg).toBe('Invalid article id');
+            });
+        })
+        test('status: 404 when user tries to request an article that does not exist', () => {
+            return request(app)
+            .get('/api/articles/77777/comments')            
+            .expect(404)
+            .then(({ body: {msg} }) => {
+                expect(msg).toBe('Article does not exist');
             });
         })
     })

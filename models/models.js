@@ -45,7 +45,8 @@ exports.updateArticleById = (article_id, inc_votes) => {
         return updatedArticle[0];
     })
 }
-// what im thinking
+
+
 exports.selectArticles = (articleQuery) => {
     validTopic = ['mitch', 'cats']
 
@@ -64,5 +65,18 @@ exports.selectArticles = (articleQuery) => {
     return db.query(defaultQuery)
     .then(({ rows: articleArray }) => {
         return addCountToArticle(articleArray)
+    })
+}
+
+exports.selectArticleIdComments = (article_id) => {
+    const promiseComments = db.query(`SELECT * FROM comments WHERE article_id = $1;`, [article_id])
+    const promiseArticles = db.query(`SELECT * FROM articles WHERE article_id = $1;`, [article_id])
+
+    return Promise.all([promiseComments, promiseArticles])
+    .then(([{rows: comments}, {rows: articles}]) => {
+        if(articles.length === 0){
+            return Promise.reject({ status : 404, msg: 'Article does not exist'})
+        }
+        return comments
     })
 }
