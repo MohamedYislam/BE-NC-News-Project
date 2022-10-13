@@ -1,5 +1,5 @@
-const { ensureNoExpected } = require('jest-matcher-utils')
 const db = require('../db/connection.js')
+const { addCountToArticle } = require('../db/seeds/utils.js')
 
 exports.selectTopics = () => {
     return db.query(`SELECT * FROM topics;`)
@@ -8,10 +8,11 @@ exports.selectTopics = () => {
     })
 }
 
-exports.selectArticleById = (article_id) => {
+exports.selectArticleById = (article_id) => {  
     const promiseOne = db.query(`SELECT * FROM articles WHERE article_id = $1;`, [article_id])
     const promiseTwo = db.query(`SELECT COUNT(*)::INTEGER FROM comments
     WHERE article_id = $1;`, [article_id])
+    
     return Promise.all([promiseOne, promiseTwo])
     .then(([{rows: article}, {rows: count}]) => {
         if(article.length === 0) {
@@ -20,6 +21,7 @@ exports.selectArticleById = (article_id) => {
         return {...article[0], ...count[0]}
     })
 }
+
 
 exports.selectUsers = () => {
     return db.query(`SELECT * FROM users;`)
@@ -41,5 +43,12 @@ exports.updateArticleById = (article_id, inc_votes) => {
             return Promise.reject({ status : 404, msg: 'Article does not exist'})
         } 
         return updatedArticle[0];
+    })
+}
+
+exports.selectArticles = () => {
+    return db.query(`SELECT * FROM articles;`)
+    .then(({ rows: articleArray }) => {
+        return addCountToArticle(articleArray)
     })
 }
