@@ -1,3 +1,5 @@
+const db = require('../connection.js')
+
 exports.convertTimestampToDate = ({ created_at, ...otherProperties }) => {
   if (!created_at) return { ...otherProperties };
   return { created_at: new Date(created_at), ...otherProperties };
@@ -20,3 +22,15 @@ exports.formatComments = (comments, idLookup) => {
     };
   });
 };
+exports.addCountToArticle = (articleArray) => {
+
+  newVal = articleArray.map((article) => {
+  return db.query(`SELECT COUNT(*)::INTEGER FROM comments
+  WHERE article_id = ${article.article_id};`)
+  .then(({rows:count}) => {
+      return {...article, ...count[0]}
+    })
+  })
+  
+  return Promise.all(newVal)
+}
