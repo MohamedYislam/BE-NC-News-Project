@@ -312,6 +312,15 @@ describe('GET', () => {
                 })
             })
         })
+        test('status: 200 when the article has no comments returns empty array', () => {
+            return request(app)
+            .get('/api/articles/4/comments')            
+            .expect(200)
+            .then(({ body: comments }) => {
+                expect(comments).toBeInstanceOf(Array);
+                expect(comments).toHaveLength(0)
+            });
+        })
     })
     describe('ERROR Handling', () => {
         test('status: 400 when user tries to find comments of an invalid article id', () => {
@@ -327,15 +336,7 @@ describe('GET', () => {
             .get('/api/articles/77777/comments')            
             .expect(404)
             .then(({ body: {msg} }) => {
-                expect(msg).toBe('no comments found for this article');
-            });
-        })
-        test('status: 404 when the article has no comments', () => {
-            return request(app)
-            .get('/api/articles/4/comments')            
-            .expect(404)
-            .then(({ body: {msg} }) => {
-                expect(msg).toBe('no comments found for this article');
+                expect(msg).toBe('Article does not exist');
             });
         })
     })
