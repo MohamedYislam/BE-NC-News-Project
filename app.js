@@ -1,13 +1,14 @@
 const express = require('express')
 const app = express();
 app.use(express.json())
-const { getTopics, getArticleById, getUsers, patchArticleById, getArticles } = require('./controllers/controllers.js')
+const { getTopics, getArticleById, getUsers, patchArticleById, getArticles, getArticleIdComments } = require('./controllers/controllers.js')
 
 app.get('/api/topics', getTopics);
 app.get('/api/articles/:article_id', getArticleById);
 app.get('/api/users', getUsers);
 app.patch('/api/articles/:article_id', patchArticleById);
 app.get('/api/articles/', getArticles)
+app.get('/api/articles/:article_id/comments', getArticleIdComments)
 
 app.use((err, req, res , next) => {
     if(err.status === 400) {
