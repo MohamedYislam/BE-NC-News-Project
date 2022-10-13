@@ -346,7 +346,7 @@ describe('GET', () => {
 //     describe('/api/articles/:article_id/comments', () => {
 //         test('status: 201, responds with the posted comment', () => {
 //             const newComment =   {
-//                 body: "God created us all and we will certainly return to Him",
+//                 body: "From God we came and to Him we return",
 //                 votes: 1,
 //                 author: "userName",
 //                 article_id: 9,
