@@ -77,8 +77,7 @@ describe('GET /api/articles/:article_id', () => {
             return request(app)
             .get(`/api/articles/seven`)
             .expect(400)
-            .then((response) => {
-                const { msg } = response.body;
+            .then(({ body: {msg} }) => {
                 expect(msg).toBe('Invalid article id');
             });
         })
@@ -86,8 +85,7 @@ describe('GET /api/articles/:article_id', () => {
             return request(app)
             .get(`/api/articles/77777`)
             .expect(404)
-            .then((response) => {
-                const { msg } = response.body;
+            .then(({ body: {msg} }) => {
                 expect(msg).toBe('Article does not exist');
             });
         })
@@ -160,8 +158,7 @@ describe('PATCH /api/articles/:article_id', () => {
             .patch(`/api/articles/1`)
             .send({increase_votes: 7})
             .expect(400)
-            .then((response) => {
-                const { msg } = response.body;
+            .then(({ body: {msg} }) => {
                 expect(msg).toBe('bad request, object sent may be invalid');
             });
         });
@@ -170,8 +167,7 @@ describe('PATCH /api/articles/:article_id', () => {
             .patch(`/api/articles/1`)
             .send({inc_votes: 'seven'})
             .expect(400)
-            .then((response) => {
-                const { msg } = response.body;
+            .then(({ body: {msg} }) => {
                 expect(msg).toBe('bad request, object sent may be invalid');
             });
         });
@@ -180,8 +176,7 @@ describe('PATCH /api/articles/:article_id', () => {
             .patch(`/api/articles/seven`)
             .send({inc_votes: 1})
             .expect(400)
-            .then((response) => {
-                const { msg } = response.body;
+            .then(({ body: {msg} }) => {
                 expect(msg).toBe('Invalid article id');
             });
         })
@@ -271,8 +266,8 @@ describe('GET', () => {
     })
 })
 
-describe.only('GET', () => {
-    describe.only('/api/articles/:article_id/comments', () => {
+describe('GET', () => {
+    describe('/api/articles/:article_id/comments', () => {
         test('status: 200 responds with an array of al the comments of the article_id', () => {
             return request(app)
             .get('/api/articles/3/comments')
@@ -319,23 +314,29 @@ describe.only('GET', () => {
         })
     })
     describe('ERROR Handling', () => {
-        // test('status: 400 when user tries to find comments of an invalid article id', () => {
-        //     return request(app)
-        //     .get('/api/articles/One/comments')            
-        //     .expect(400)
-        //     .then(({ body: {msg} }) => {
-        //         expect(msg).toBe('Invalid article id');
-        //     });
-        // })
-        // test('status: 404 when user tries to request an article that does not exist', () => {
-        //     return request(app)
-        //     .get('/api/articles/7777/comments')            
-        //     .expect(404)
-        //     .then((response) => {
-        //         const { msg } = response.body;
-        //         expect(msg).toBe('Article does not exist');
-        //     });
-        // })
+        test('status: 400 when user tries to find comments of an invalid article id', () => {
+            return request(app)
+            .get('/api/articles/One/comments')            
+            .expect(400)
+            .then(({ body: {msg} }) => {
+                expect(msg).toBe('Invalid article id');
+            });
+        })
+        test('status: 404 when user tries to request an article that does not exist', () => {
+            return request(app)
+            .get('/api/articles/77777/comments')            
+            .expect(404)
+            .then(({ body: {msg} }) => {
+                expect(msg).toBe('no comments found for this article');
+            });
+        })
+        test('status: 404 when the article has no comments', () => {
+            return request(app)
+            .get('/api/articles/4/comments')            
+            .expect(404)
+            .then(({ body: {msg} }) => {
+                expect(msg).toBe('no comments found for this article');
+            });
+        })
     })
-    
 })
