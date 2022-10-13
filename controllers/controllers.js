@@ -53,3 +53,8 @@ exports.getArticleIdComments = (req, res, next) => {
         next(err)
     })
 }
+
+exports.postCommentByArticleId = (req, res, next) => {
+    console.log("inside controllers of postCommentByArticleId")
+    console.log(req.body, "<--req.body")
+}

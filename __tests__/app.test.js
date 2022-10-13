@@ -341,3 +341,29 @@ describe('GET', () => {
         })
     })
 })
+
+// describe.only('POST', () => {
+//     describe('/api/articles/:article_id/comments', () => {
+//         test('status: 201, responds with the posted comment', () => {
+//             const newComment =   {
+//                 body: "God created us all and we will certainly return to Him",
+//                 votes: 1,
+//                 author: "userName",
+//                 article_id: 9,
+//                 created_at: 1584205320000,
+//             }
+//             return request(app)
+//             .post('/api/articles/:article_id/comments')
+//             .send(newComment)
+//             .expect(201)
+//             .then((result) => {
+//                 console.log(result, "<--result")
+//             })
+//         })
+
+
+//     })
+//     // updates database  test
+// })
+
+
