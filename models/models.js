@@ -45,7 +45,8 @@ exports.updateArticleById = (article_id, inc_votes) => {
         return updatedArticle[0];
     })
 }
-// what im thinking
+
+
 exports.selectArticles = (articleQuery) => {
     validTopic = ['mitch', 'cats']
 
@@ -64,5 +65,14 @@ exports.selectArticles = (articleQuery) => {
     return db.query(defaultQuery)
     .then(({ rows: articleArray }) => {
         return addCountToArticle(articleArray)
+    })
+}
+
+exports.selectArticleIdComments = (article_id) => {
+    console.log('inside model')
+    console.log(article_id, "<article_id in model")
+    return db.query(`SELECT * FROM comments WHERE article_id = $1;`, [article_id])
+    .then(({rows: comments}) => {
+        return comments
     })
 }
