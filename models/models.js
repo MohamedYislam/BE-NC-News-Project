@@ -73,7 +73,6 @@ exports.selectArticleIdComments = (article_id) => {
     const promiseArticles = db.query(`SELECT * FROM articles WHERE article_id = $1;`, [article_id])
 
     return Promise.all([promiseComments, promiseArticles])
-
     .then(([{rows: comments}, {rows: articles}]) => {
         if(articles.length === 0){
             return Promise.reject({ status : 404, msg: 'Article does not exist'})
