@@ -45,9 +45,23 @@ exports.updateArticleById = (article_id, inc_votes) => {
         return updatedArticle[0];
     })
 }
+// what im thinking
+exports.selectArticles = (articleQuery) => {
+    validTopic = ['mitch', 'cats']
 
-exports.selectArticles = () => {
-    return db.query(`SELECT * FROM articles;`)
+    if (articleQuery.topic){
+        WHERE = ` WHERE topic = '${articleQuery.topic}'`
+    } else {
+        WHERE = ``
+    }
+
+    if(!validTopic.includes(articleQuery.topic) && articleQuery.topic !=undefined){
+        return Promise.reject({ status: 404, msg: "topic not found" })
+    }
+
+    let defaultQuery = `SELECT * FROM articles  ${WHERE} ORDER BY created_at DESC;`
+
+    return db.query(defaultQuery)
     .then(({ rows: articleArray }) => {
         return addCountToArticle(articleArray)
     })
