@@ -69,11 +69,14 @@ exports.selectArticles = (articleQuery) => {
 }
 
 exports.selectArticleIdComments = (article_id) => {
-    
-    return db.query(`SELECT * FROM comments WHERE article_id = $1;`, [article_id])
-    .then(({rows: comments}) => {
-        if(comments.length === 0){
-            return Promise.reject({ status : 404, msg: 'no comments found for this article'})
+    const promiseComments = db.query(`SELECT * FROM comments WHERE article_id = $1;`, [article_id])
+    const promiseArticles = db.query(`SELECT * FROM articles WHERE article_id = $1;`, [article_id])
+
+    return Promise.all([promiseComments, promiseArticles])
+
+    .then(([{rows: comments}, {rows: articles}]) => {
+        if(articles.length === 0){
+            return Promise.reject({ status : 404, msg: 'Article does not exist'})
         }
         return comments
     })
