@@ -69,10 +69,12 @@ exports.selectArticles = (articleQuery) => {
 }
 
 exports.selectArticleIdComments = (article_id) => {
-    console.log('inside model')
-    console.log(article_id, "<article_id in model")
+    
     return db.query(`SELECT * FROM comments WHERE article_id = $1;`, [article_id])
     .then(({rows: comments}) => {
+        if(comments.length === 0){
+            return Promise.reject({ status : 404, msg: 'no comments found for this article'})
+        }
         return comments
     })
 }
