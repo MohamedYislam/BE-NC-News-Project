@@ -34,8 +34,11 @@ exports.patchArticleById = (req, res, next) => {
     })
 }
 
-exports.getArticles = (req, res) => {
-    selectArticles().then((articles) => {
+exports.getArticles = (req, res, next) => {
+    selectArticles(req.query).then((articles) => {
         res.status(200).send({articles})
+    })
+    .catch((err) => {
+        next(err)
     })
 }
