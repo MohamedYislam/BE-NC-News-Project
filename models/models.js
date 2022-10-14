@@ -50,9 +50,9 @@ exports.updateArticleById = (article_id, inc_votes) => {
 exports.selectArticles = (articleQuery) => {
     validTopic = ['mitch', 'cats']
     validSortBy = ['article_id', 'title', 'topic', 'author', 'body', 'created_at', 'votes', 'count']
-    console.log(articleQuery, "<--articleQuery")
-    if(articleQuery.sortBy) {
+    validOrder = ['asc', 'desc']
 
+    if(articleQuery.sortBy) {
         sortBy = ` ORDER BY ${articleQuery.sortBy}`
     } else {
         sortBy = `ORDER BY created_at`;
@@ -62,15 +62,24 @@ exports.selectArticles = (articleQuery) => {
     } else {
         WHERE = ``
     }
+    if (articleQuery.order){
+        order = `${articleQuery.order}`
+    } else {
+        order = `desc`
+    }
 
     if(!validTopic.includes(articleQuery.topic) && articleQuery.topic !=undefined){
         return Promise.reject({ status: 404, msg: "topic not found" })
     }
     if(!validSortBy.includes(articleQuery.sortBy) && articleQuery.sortBy !=undefined){
-        return Promise.reject({ status: 404, msg: "can not sort by this critera"})
+        return Promise.reject({ status: 404, msg: "can not sort by this critera" })
+    }
+    if(!validOrder.includes(articleQuery.order) && articleQuery.order !=undefined){
+        return Promise.reject({ status: 404, msg: "order must be either asc or desc" })
     }
 
-    let defaultQuery = `SELECT * FROM articles  ${WHERE}    ${sortBy}   DESC;`
+
+    let defaultQuery = `SELECT * FROM articles  ${WHERE}    ${sortBy}   ${order};`
 
     return db.query(defaultQuery)
     .then(({ rows: articleArray }) => {
