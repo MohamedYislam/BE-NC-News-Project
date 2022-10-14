@@ -20,7 +20,6 @@ exports.getUsers = (req, res) => {
         res.status(200).send({users})
     })
     .catch((err) =>  next(err))
-
 }
 
 exports.patchArticleById = (req, res, next) => {
@@ -49,9 +48,14 @@ exports.getArticleIdComments = (req, res, next) => {
 }
 
 exports.postArticleIdComment = (req, res, next) => {
+    const { body: comment } = req.body 
+    const { article_id } = req.params;
+    const { username } = req.body
 
-    insertArticleIdComment(req.params, req.body).then((comment) => {
+    insertArticleIdComment(comment, article_id, username).then((comment) => {
         res.status(201).send(comment);
     })
-    .catch((err) =>  next(err))
+    .catch((err) =>  {
+        next(err)
+    })
 }
