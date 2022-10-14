@@ -86,7 +86,7 @@ describe('GET /api/articles/:article_id', () => {
             .get(`/api/articles/77777`)
             .expect(404)
             .then(({ body: {msg} }) => {
-                expect(msg).toBe('Article does not exist');
+                expect(msg).toBe('Article not found');
             });
         })
     })
@@ -187,7 +187,7 @@ describe('PATCH /api/articles/:article_id', () => {
             .expect(404)
             .then((response) => {
                 const { msg } = response.body;
-                expect(msg).toBe('Article does not exist');
+                expect(msg).toBe('Article not found');
             });
         })
     });
@@ -336,8 +336,92 @@ describe('GET', () => {
             .get('/api/articles/77777/comments')            
             .expect(404)
             .then(({ body: {msg} }) => {
-                expect(msg).toBe('Article does not exist');
+                expect(msg).toBe('Article not found');
             });
         })
     })
 })
+
+describe('POST', () => {
+    describe('/api/articles/:article_id/comments', () => {
+        test('status: 201, responds with the posted comment', () => {
+            const newComment =   {
+                username: "icellusedkars",
+                body: "From God we came and to Him we return",
+            }
+            return request(app)
+            .post('/api/articles/1/comments')
+            .send(newComment)
+            .expect(201)
+            .then(({body : responseComment}) => {
+                expect(responseComment).toEqual(
+                    expect.objectContaining({
+                        comment_id: 19,
+                        body: 'From God we came and to Him we return',
+                        article_id: 1,
+                        author: "icellusedkars",
+                        votes: 0,
+                        created_at: expect.any(String),
+                    })  
+                )
+            })
+        })
+        describe('ERROR handling', () => {
+            test('status 400 when user tries to post a comment to an invalid article_id', () =>{
+                const newComment =   {
+                    username: "icellusedkars",
+                    body: "There are more stars in the heaven thann grains of sand on the planet",
+                }
+                return request(app)
+                .post('/api/articles/One/comments')
+                .send(newComment)
+                .expect(400)
+                .then(({ body: {msg} }) => {
+                    expect(msg).toBe('Invalid article id');
+                });           
+            })
+            test('status 400, invalid object', () => {
+                const newComment =   {
+                    invalidKey: "icellusedkars",
+                    body: "The moon is 4.5 billion years old",
+                }
+                return request(app)
+                .post('/api/articles/1/comments')
+                .send(newComment)
+                .expect(400)
+                .then(({ body: {msg} }) => {
+                    expect(msg).toBe('Invalid object, check object key');
+                });        
+            });        
+            test('status 404 when user tries to post a comment to an article which does not exist', () =>{
+                const newComment =   {
+                    username: "icellusedkars",
+                    body: "The sun is 330000 heavier than the earth",
+                }
+                return request(app)
+                .post('/api/articles/7777/comments')
+                .send(newComment)
+                .expect(404)
+                .then(({ body: {msg} }) => {
+                    expect(msg).toBe('Article not found');
+                });           
+            })
+            test('status 404 invalid username', () => {
+                const newComment =   {
+                    username: "usernameNotinDatabase",
+                    body: "The moon is 4.5 billion years old",
+                }
+                return request(app)
+                .post('/api/articles/1/comments')
+                .send(newComment)
+                .expect(404)
+                .then(({ body: {msg} }) => {
+                    expect(msg).toBe('invalid object sent, username may not exist');
+                });        
+            })
+        })
+
+    })
+})
+
+
