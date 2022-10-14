@@ -16,7 +16,7 @@ exports.selectArticleById = (article_id) => {
     return Promise.all([promiseOne, promiseTwo])
     .then(([{rows: article}, {rows: count}]) => {
         if(article.length === 0) {
-            return Promise.reject({ status : 404, msg: 'Article does not exist'}) 
+            return Promise.reject({ status : 404, msg: 'Article not found'}) 
         }
         return {...article[0], ...count[0]}
     })
@@ -40,7 +40,7 @@ exports.updateArticleById = (article_id, inc_votes) => {
     RETURNING *;`, [article_id, inc_votes])
     .then(({rows : updatedArticle}) => {
         if(updatedArticle.length == 0) {
-            return Promise.reject({ status : 404, msg: 'Article does not exist'})
+            return Promise.reject({ status : 404, msg: 'Article not found'})
         } 
         return updatedArticle[0];
     })
@@ -75,18 +75,25 @@ exports.selectArticleIdComments = (article_id) => {
     return Promise.all([promiseComments, promiseArticles])
     .then(([{rows: comments}, {rows: articles}]) => {
         if(articles.length === 0){
-            return Promise.reject({ status : 404, msg: 'Article does not exist'})
+            return Promise.reject({ status : 404, msg: 'Article not found'})
         }
         return comments
     })
 }
 
-exports.insertArticleIdComment = ({article_id}, postComment) => {
+exports.insertArticleIdComment = (comment, article_id, username) => {
 
-    return db.query(`INSERT INTO comments (body, article_id, author, votes) VALUES ($1, $2, $3, 0) RETURNING *;`,
-    [postComment.body, article_id, postComment.username])
-    .then(({rows : comment}) => {
-        return comment[0]
+    return db.query(`SELECT * FROM articles WHERE article_id = $1;`, [article_id])
+    .then(({rows : article}) => {
+    
+        if(article.length === 0) {    
+            return Promise.reject({ status : 404, msg: 'Article not found'})
+        }
+
+        return db.query(`INSERT INTO comments (body, article_id, author, votes) VALUES ($1, $2, $3, 0) RETURNING *;`,
+        [comment, article_id, username])
+        .then(({rows : comment}) => {
+            return comment[0]
+        })
     })
 }
-//nchelp error: insert or update on table "comments" violates foreign key constraint "comments_author_fkey"
