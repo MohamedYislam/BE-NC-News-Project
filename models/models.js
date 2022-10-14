@@ -82,13 +82,11 @@ exports.selectArticleIdComments = (article_id) => {
 }
 
 exports.insertArticleIdComment = ({article_id}, postComment) => {
-    console.log("inside insertModel")
-    console.log(article_id, "<--article_id inside insert")
-    console.log(postComment, "<--postComment inside insert")
-
-    return db.query(`INSERT INTO comments (body, votes, author, article_id) VALUES ($1, 0, $2, $3) RETURNING *;`,
-    [postComment.body, postComment.username, article_id]).then((result) => {
-        console.log(result, "<<<result in Model")
+    return db.query(`INSERT INTO comments (body, article_id, author, votes) VALUES ($1, $2, $3, 0) RETURNING *;`,
+    [postComment.body, article_id, postComment.username])
+    .then(({rows : comment}) => {
+        console.log(comment[0], "<<<result in Model")
+        return comment[0]
     })
 }
 //nchelp error: insert or update on table "comments" violates foreign key constraint "comments_author_fkey"
