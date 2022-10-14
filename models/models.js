@@ -82,10 +82,10 @@ exports.selectArticleIdComments = (article_id) => {
 }
 
 exports.insertArticleIdComment = ({article_id}, postComment) => {
+
     return db.query(`INSERT INTO comments (body, article_id, author, votes) VALUES ($1, $2, $3, 0) RETURNING *;`,
     [postComment.body, article_id, postComment.username])
     .then(({rows : comment}) => {
-        console.log(comment[0], "<<<result in Model")
         return comment[0]
     })
 }
