@@ -25,8 +25,7 @@ exports.getUsers = (req, res) => {
 exports.patchArticleById = (req, res, next) => {
     const { article_id } = req.params
     const { inc_votes } = req.body;
-    updateArticleById(article_id, inc_votes)
-    .then((article) => {
+    updateArticleById(article_id, inc_votes).then((article) => {
         res.status(200).send({article})
     })
     .catch((err) => {
@@ -55,14 +54,11 @@ exports.getArticleIdComments = (req, res, next) => {
 }
 
 exports.postArticleIdComment = (req, res, next) => {
-    // const { body : comment } = req.body
-    // const { username : author } = req.body
-    const postComment =req.body
+
+    const postComment = req.body
     console.log(req.body, "<--req.body")
-    // console.log(comment, "<<body")
-    // console.log(author, "<---author")
-    // console.log("inside controllers of postCommentByArticleId")
-    // console.log(req.body, "<--req.body")
-    insertArticleIdComment(req.params, req.body)
+    insertArticleIdComment(req.params, req.body).then((comment) => {
+        res.status(201).send(comment);
+    })
 
 }
