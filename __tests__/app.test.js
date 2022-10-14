@@ -193,7 +193,7 @@ describe('PATCH /api/articles/:article_id', () => {
     });
 })
 
-describe.only('GET', () => {
+describe('GET', () => {
     describe('/api/articles', () => {
         test('status 200: responds with an array of topic objects', () => {
             return request(app)
@@ -337,7 +337,7 @@ describe.only('GET', () => {
         test("can not be sorted by  items which are not columns in the table", () => {
             return request(app)
             .get('/api/articles?sortBy=username')
-            .expect(404)
+            .expect(400)
             .then((response) => {
                 const { msg } = response.body;
                 expect(msg).toBe("can not sort by this critera");
@@ -346,7 +346,7 @@ describe.only('GET', () => {
         test("can not be sorted by  items which are not columns in the table", () => {
             return request(app)
             .get('/api/articles?sortBy=article_id&&order=DELETE')
-            .expect(404)
+            .expect(400)
             .then((response) => {
                 const { msg } = response.body;
                 expect(msg).toBe("order must be either asc or desc");

@@ -72,10 +72,10 @@ exports.selectArticles = (articleQuery) => {
         return Promise.reject({ status: 404, msg: "topic not found" })
     }
     if(!validSortBy.includes(articleQuery.sortBy) && articleQuery.sortBy !=undefined){
-        return Promise.reject({ status: 404, msg: "can not sort by this critera" })
+        return Promise.reject({ status: 400, msg: "can not sort by this critera" })
     }
     if(!validOrder.includes(articleQuery.order) && articleQuery.order !=undefined){
-        return Promise.reject({ status: 404, msg: "order must be either asc or desc" })
+        return Promise.reject({ status: 400, msg: "order must be either asc or desc" })
     }
 
 
