@@ -261,6 +261,14 @@ describe.only('GET', () => {
                 expect(articles).toBeSortedBy('author', { descending: true })
             });
         })
+        test('Can also be sorted according to order criteria ascending ', () => {
+            return request(app)
+            .get('/api/articles?sortBy=article_id&&order=asc')
+            .expect(200)
+                .then(({ body: { articles } }) => {
+                expect(articles).toBeSortedBy('article_id')
+            });
+        })
         test("Can be sorteded by votes , default descending", () => {
             return request(app)
             .get('/api/articles?sortBy=votes')
@@ -326,13 +334,22 @@ describe.only('GET', () => {
                 expect(msg).toBe('topic not found');
             });
         })
-        test("can not be sorted by items which are not columns in the table", () => {
+        test("can not be sorted by  items which are not columns in the table", () => {
             return request(app)
             .get('/api/articles?sortBy=username')
             .expect(404)
             .then((response) => {
                 const { msg } = response.body;
                 expect(msg).toBe("can not sort by this critera");
+            });  
+        })
+        test("can not be sorted by  items which are not columns in the table", () => {
+            return request(app)
+            .get('/api/articles?sortBy=article_id&&order=DELETE')
+            .expect(404)
+            .then((response) => {
+                const { msg } = response.body;
+                expect(msg).toBe("order must be either asc or desc");
             });  
         })
     })
