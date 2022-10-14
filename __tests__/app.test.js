@@ -342,7 +342,7 @@ describe('GET', () => {
     })
 })
 
-describe.only('POST', () => {
+describe('POST', () => {
     describe('/api/articles/:article_id/comments', () => {
         test('status: 201, responds with the posted comment', () => {
             const newComment =   {
@@ -366,23 +366,36 @@ describe.only('POST', () => {
                 )
             })
         })
-        // describe('ERROR handling', () => {
-        //     test('status 400 when user tries to post a comment to an invalid article_id', () =>{
-        //         const newComment =   {
-        //             username: "icellusedkars",
-        //             body: "From God we came and to Him we return",
-        //         }
-        //         return request(app)
-        //         .post('/api/articles/One/comments')
-        //         .send(newComment)
-        //         .expect(400)
-        //         .then(({ body: {msg} }) => {
-        //             expect(msg).toBe('Invalid article id');
-        //         });           
-        //      })
+        describe('ERROR handling', () => {
+            test('status 400 when user tries to post a comment to an invalid article_id', () =>{
+                const newComment =   {
+                    username: "icellusedkars",
+                    body: "There are more stars in the heaven then grains of sand on the planet",
+                }
+                return request(app)
+                .post('/api/articles/One/comments')
+                .send(newComment)
+                .expect(400)
+                .then(({ body: {msg} }) => {
+                    expect(msg).toBe('Invalid article id');
+                });           
+            })
+            test('status 404 when user tries to post a comment to an article which does not exist', () =>{
+                const newComment =   {
+                    username: "icellusedkars",
+                    body: "The sun is 330000 heavier than the earth",
+                }
+                return request(app)
+                .post('/api/articles/7777/comments')
+                .send(newComment)
+                .expect(404)
+                .then(({ body: {msg} }) => {
+                    expect(msg).toBe('Article does not exist');
+                });           
+            })
         })
-    // })
-    // updates database  test
+
+    })
 })
 
 
