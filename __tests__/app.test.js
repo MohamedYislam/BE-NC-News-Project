@@ -193,7 +193,7 @@ describe('PATCH /api/articles/:article_id', () => {
     });
 })
 
-describe('GET', () => {
+describe.only('GET', () => {
     describe('/api/articles', () => {
         test('status 200: responds with an array of topic objects', () => {
             return request(app)
@@ -220,7 +220,7 @@ describe('GET', () => {
             });
         });
     })
-    describe('Query', () => {
+    describe('QUERY SortBy', () => {
         test("Default order is by date descending", () => {
             return request(app)
             .get('/api/articles')
@@ -229,7 +229,47 @@ describe('GET', () => {
                 expect(articles).toBeSortedBy('created_at', { descending: true })
             });
         })
-        test("Query filter by topic", () => {
+        test("Can be sorteded by article_id , default descending", () => {
+            return request(app)
+            .get('/api/articles?sortBy=article_id')
+            .expect(200)
+                .then(({ body: { articles } }) => {
+                expect(articles).toBeSortedBy('article_id', { descending: true })
+            });
+        })
+        test("Can be sorteded by title, default descending", () => {
+            return request(app)
+            .get('/api/articles?sortBy=title')
+            .expect(200)
+                .then(({ body: { articles } }) => {
+                expect(articles).toBeSortedBy('title', { descending: true })
+            });
+        })
+        test("Can be sorteded by topic, default descending", () => {
+            return request(app)
+            .get('/api/articles?sortBy=topic')
+            .expect(200)
+                .then(({ body: { articles } }) => {
+                expect(articles).toBeSortedBy('topic', { descending: true })
+            });
+        })
+        test("Can be sorteded by author, default descending", () => {
+            return request(app)
+            .get('/api/articles?sortBy=author')
+            .expect(200)
+                .then(({ body: { articles } }) => {
+                expect(articles).toBeSortedBy('author', { descending: true })
+            });
+        })
+        test("Can be sorteded by votes , default descending", () => {
+            return request(app)
+            .get('/api/articles?sortBy=votes')
+            .expect(200)
+                .then(({ body: { articles } }) => {
+                expect(articles).toBeSortedBy('votes', { descending: true })
+            });
+        })
+        test("Query filter by topic 'mitch' ", () => {
             return request(app)
             .get('/api/articles?topic=mitch')
             .expect(200)
@@ -251,7 +291,30 @@ describe('GET', () => {
                     );
                 });
             })
-        })    
+        })
+        test("Query filter by topic 'cats' ", () => {
+            return request(app)
+            .get('/api/articles?topic=cats')
+            .expect(200)
+            .then(({ body: { articles } }) => {
+                expect(articles).toBeInstanceOf(Array);
+                articles.forEach((article) => {
+                    expect(articles).toHaveLength(1)
+                    expect(article).toEqual(
+                        expect.objectContaining({
+                            article_id: expect.any(Number),
+                            title: expect.any(String),
+                            topic: 'cats',
+                            author: expect.any(String),
+                            body: expect.any(String),
+                            created_at: expect.any(String),
+                            votes: expect.any(Number),
+                            count: expect.any(Number)
+                        })
+                    );
+                });
+            })
+        })
     })
     describe('ERROR Handling', () => {
         test('Invalid topic filter', () => {
@@ -262,6 +325,15 @@ describe('GET', () => {
                 const { msg } = response.body;
                 expect(msg).toBe('topic not found');
             });
+        })
+        test("can not be sorted by items which are not columns in the table", () => {
+            return request(app)
+            .get('/api/articles?sortBy=username')
+            .expect(404)
+            .then((response) => {
+                const { msg } = response.body;
+                expect(msg).toBe("can not sort by this critera");
+            });  
         })
     })
 })
@@ -420,7 +492,6 @@ describe('POST', () => {
                 });        
             })
         })
-
     })
 })
 
