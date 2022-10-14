@@ -49,7 +49,14 @@ exports.updateArticleById = (article_id, inc_votes) => {
 
 exports.selectArticles = (articleQuery) => {
     validTopic = ['mitch', 'cats']
+    validSortBy = ['article_id', 'title', 'topic', 'author', 'body', 'created_at', 'votes', 'count']
+    console.log(articleQuery, "<--articleQuery")
+    if(articleQuery.sortBy) {
 
+        sortBy = ` ORDER BY ${articleQuery.sortBy}`
+    } else {
+        sortBy = `ORDER BY created_at`;
+    }
     if (articleQuery.topic){
         WHERE = ` WHERE topic = '${articleQuery.topic}'`
     } else {
@@ -59,8 +66,11 @@ exports.selectArticles = (articleQuery) => {
     if(!validTopic.includes(articleQuery.topic) && articleQuery.topic !=undefined){
         return Promise.reject({ status: 404, msg: "topic not found" })
     }
+    if(!validSortBy.includes(articleQuery.sortBy) && articleQuery.sortBy !=undefined){
+        return Promise.reject({ status: 404, msg: "can not sort by this critera"})
+    }
 
-    let defaultQuery = `SELECT * FROM articles  ${WHERE} ORDER BY created_at DESC;`
+    let defaultQuery = `SELECT * FROM articles  ${WHERE}    ${sortBy}   DESC;`
 
     return db.query(defaultQuery)
     .then(({ rows: articleArray }) => {
