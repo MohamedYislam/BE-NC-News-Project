@@ -27,7 +27,7 @@ app.use((err, req, res, next) => {
     }
     if (err.code === '23503') {
         res.status(404).send({msg: 'invalid object sent, username may not exist'})
-    }code: '23502'
+    }
     if (err.status === 404){
         res.status(404).send({msg: err.msg})
     } else {
