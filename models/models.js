@@ -3,22 +3,26 @@ const { addCountToArticle } = require('../db/seeds/utils.js')
 
 exports.selectTopics = () => {
     return db.query(`SELECT * FROM topics;`)
-    .then(({ rows }) => {
-        return rows
+    .then(({ rows: topics }) => {
+        return topics
     })
 }
 
 exports.selectArticleById = (article_id) => {  
-    const promiseOne = db.query(`SELECT * FROM articles WHERE article_id = $1;`, [article_id])
-    const promiseTwo = db.query(`SELECT COUNT(*)::INTEGER FROM comments
-    WHERE article_id = $1;`, [article_id])
-    
-    return Promise.all([promiseOne, promiseTwo])
-    .then(([{rows: article}, {rows: count}]) => {
-        if(article.length === 0) {
+    return db.query(`
+    SELECT articles.*, COUNT(comments.article_id)::INT AS comment_count
+    FROM articles
+    LEFT JOIN comments 
+    ON articles.article_id = comments.article_id
+    WHERE articles.article_id = $1
+    GROUP BY articles.article_id;`, [article_id])
+    .then(({rows : article}) => {
+        console.log(article, "<--result")
+        if(article.length === 0){
             return Promise.reject({ status : 404, msg: 'Article not found'}) 
+
         }
-        return {...article[0], ...count[0]}
+        return article[0];
     })
 }
 
@@ -45,10 +49,14 @@ exports.updateArticleById = (article_id, inc_votes) => {
         return updatedArticle[0];
     })
 }
+//change fundamental method of query and combining with with comment
+//export the function so you dont need to copy and paste it
+// add tests for all columns including comment count
 
-
+// see how to add test for topics that exist but no article a
+//tidy up code, 
 exports.selectArticles = (articleQuery) => {
-    validTopic = ['mitch', 'cats']
+    validTopic = ['mitch', 'cats', 'paper']
     validSortBy = ['article_id', 'title', 'topic', 'author', 'body', 'created_at', 'votes', 'count']
     validOrder = ['asc', 'desc']
 
