@@ -10,17 +10,15 @@ exports.selectTopics = () => {
 
 exports.selectArticleById = (article_id) => {  
     return db.query(`
-    SELECT articles.*, COUNT(comments.article_id)::INT AS comment_count
-    FROM articles
-    LEFT JOIN comments 
-    ON articles.article_id = comments.article_id
-    WHERE articles.article_id = $1
-    GROUP BY articles.article_id;`, [article_id])
+        SELECT articles.*, COUNT(comments.article_id)::INT AS comment_count
+        FROM articles
+        LEFT JOIN comments 
+        ON articles.article_id = comments.article_id
+        WHERE articles.article_id = $1
+        GROUP BY articles.article_id;`, [article_id])
     .then(({rows : article}) => {
-        console.log(article, "<--result")
         if(article.length === 0){
             return Promise.reject({ status : 404, msg: 'Article not found'}) 
-
         }
         return article[0];
     })
@@ -29,8 +27,8 @@ exports.selectArticleById = (article_id) => {
 
 exports.selectUsers = () => {
     return db.query(`SELECT * FROM users;`)
-    .then(({ rows }) => {
-        return rows
+    .then(({ rows : users }) => {
+        return users
     })
 }
 
@@ -55,9 +53,11 @@ exports.updateArticleById = (article_id, inc_votes) => {
 
 // see how to add test for topics that exist but no article a
 //tidy up code, 
+// add invaid query, choose topic article_id or..
 exports.selectArticles = (articleQuery) => {
+    console.log(articleQuery, "<--articleQuery")
     validTopic = ['mitch', 'cats', 'paper']
-    validSortBy = ['article_id', 'title', 'topic', 'author', 'body', 'created_at', 'votes', 'count']
+    validSortBy = ['article_id', 'title', 'topic', 'author', 'body', 'created_at', 'votes', 'comment_count']
     validOrder = ['asc', 'desc']
 
     if(articleQuery.sortBy) {
@@ -73,7 +73,7 @@ exports.selectArticles = (articleQuery) => {
     if (articleQuery.order){
         order = `${articleQuery.order}`
     } else {
-        order = `desc`
+        order = `DESC`
     }
 
     if(!validTopic.includes(articleQuery.topic) && articleQuery.topic !=undefined){
@@ -86,12 +86,13 @@ exports.selectArticles = (articleQuery) => {
         return Promise.reject({ status: 400, msg: "order must be either asc or desc" })
     }
 
-
-    let defaultQuery = `SELECT * FROM articles  ${WHERE}    ${sortBy}   ${order};`
-
-    return db.query(defaultQuery)
-    .then(({ rows: articleArray }) => {
-        return addCountToArticle(articleArray)
+    return db.query(`
+        SELECT articles.*, COUNT(comments.article_id)::INT AS comment_count    
+        FROM articles LEFT JOIN comments
+        ON articles.article_id = comments.article_id
+        ${WHERE}    GROUP BY articles.article_id    ${sortBy}    ${order};`)
+    .then(({rows : articles}) => {
+        return articles;
     })
 }
 
