@@ -22,15 +22,3 @@ exports.formatComments = (comments, idLookup) => {
     };
   });
 };
-exports.addCountToArticle = (articleArray) => {
-
-  newVal = articleArray.map((article) => {
-  return db.query(`SELECT COUNT(*)::INTEGER FROM comments
-  WHERE article_id = ${article.article_id};`)
-  .then(({rows:count}) => {
-      return {...article, ...count[0]}
-    })
-  })
-  
-  return Promise.all(newVal)
-}
