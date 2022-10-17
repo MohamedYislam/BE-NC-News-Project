@@ -17,9 +17,9 @@ describe('GET /api/topics', () => {
         .get('/api/topics')
         .expect(200)
         .then(({ body }) => {
-        const { topics } = body
-        expect(topics).toBeInstanceOf(Array);
-        expect(topics).toHaveLength(3);
+            const { topics } = body
+            expect(topics).toBeInstanceOf(Array);
+            expect(topics).toHaveLength(3);
             topics.forEach((topic) => {
                 expect(topic).toEqual(
                     expect.objectContaining({
@@ -48,9 +48,8 @@ describe('GET /api/articles/:article_id', () => {
                     'body': 'I find this existence challenging',
                     created_at: '2020-07-09T17:11:00.000Z',
                     votes : 100,
-                    count: 11
+                    comment_count: 11
                 })
-                
             })
         })
         test('status:200, more tests', () => {
@@ -67,7 +66,7 @@ describe('GET /api/articles/:article_id', () => {
                     body: 'some gifs',
                     created_at: '2020-11-03T05:12:00.000Z',
                     votes: 0,
-                    count: 2
+                    comment_count: 2
                 })
             })
         })
@@ -199,10 +198,9 @@ describe('GET', () => {
             return request(app)
             .get('/api/articles')
             .expect(200)
-            .then(({ body }) => {
-            const { articles } = body
-            expect(articles).toBeInstanceOf(Array);
-            expect(articles).toHaveLength(12);
+            .then(({ body: {articles} }) => {
+                expect(articles).toBeInstanceOf(Array);
+                expect(articles).toHaveLength(12);
                 articles.forEach((article) => {
                     expect(article).toEqual(
                         expect.objectContaining({
@@ -213,14 +211,14 @@ describe('GET', () => {
                             body: expect.any(String),
                             created_at: expect.any(String),
                             votes: expect.any(Number),
-                            count: expect.any(Number)
+                            comment_count: expect.any(Number)
                         })
                     );
                 });
             });
         });
     })
-    describe('Query', () => {
+    describe('QUERY SortBy', () => {
         test("Default order is by date descending", () => {
             return request(app)
             .get('/api/articles')
@@ -229,14 +227,70 @@ describe('GET', () => {
                 expect(articles).toBeSortedBy('created_at', { descending: true })
             });
         })
-        test("Query filter by topic", () => {
+        test("Can be sorteded by article_id , default descending", () => {
+            return request(app)
+            .get('/api/articles?sortBy=article_id')
+            .expect(200)
+                .then(({ body: { articles } }) => {
+                expect(articles).toBeSortedBy('article_id', { descending: true })
+            });
+        })
+        test("Can be sorteded by title, default descending", () => {
+            return request(app)
+            .get('/api/articles?sortBy=title')
+            .expect(200)
+                .then(({ body: { articles } }) => {
+                expect(articles).toBeSortedBy('title', { descending: true })
+            });
+        })
+        test("Can be sorteded by topic, default descending", () => {
+            return request(app)
+            .get('/api/articles?sortBy=topic')
+            .expect(200)
+                .then(({ body: { articles } }) => {
+                expect(articles).toBeSortedBy('topic', { descending: true })
+            });
+        })
+        test("Can be sorteded by author, default descending", () => {
+            return request(app)
+            .get('/api/articles?sortBy=author')
+            .expect(200)
+                .then(({ body: { articles } }) => {
+                expect(articles).toBeSortedBy('author', { descending: true })
+            });
+        })
+        test("Can be sorteded by comment_count, default descending", () => {
+            return request(app)
+            .get('/api/articles?sortBy=comment_count')
+            .expect(200)
+                .then(({ body: { articles } }) => {
+                expect(articles).toBeSortedBy('comment_count', { descending: true })
+            });
+        })
+        test('Can also be sorted according to order criteria ascending ', () => {
+            return request(app)
+            .get('/api/articles?sortBy=article_id&&order=asc')
+            .expect(200)
+                .then(({ body: { articles } }) => {
+                expect(articles).toBeSortedBy('article_id')
+            });
+        })
+        test("Can be sorteded by votes , default descending", () => {
+            return request(app)
+            .get('/api/articles?sortBy=votes')
+            .expect(200)
+                .then(({ body: { articles } }) => {
+                expect(articles).toBeSortedBy('votes', { descending: true })
+            });
+        })
+        test("Query filter by topic 'mitch' ", () => {
             return request(app)
             .get('/api/articles?topic=mitch')
             .expect(200)
             .then(({ body: { articles } }) => {
                 expect(articles).toBeInstanceOf(Array);
+                expect(articles).toHaveLength(11)
                 articles.forEach((article) => {
-                    expect(articles).toHaveLength(11)
                     expect(article).toEqual(
                         expect.objectContaining({
                             article_id: expect.any(Number),
@@ -246,12 +300,44 @@ describe('GET', () => {
                             body: expect.any(String),
                             created_at: expect.any(String),
                             votes: expect.any(Number),
-                            count: expect.any(Number)
+                            comment_count: expect.any(Number)
                         })
                     );
                 });
             })
-        })    
+        })
+        test("Query filter by topic 'cats' ", () => {
+            return request(app)
+            .get('/api/articles?topic=cats')
+            .expect(200)
+            .then(({ body: { articles } }) => {
+                expect(articles).toBeInstanceOf(Array);
+                articles.forEach((article) => {
+                    expect(articles).toHaveLength(1)
+                    expect(article).toEqual(
+                        expect.objectContaining({
+                            article_id: expect.any(Number),
+                            title: expect.any(String),
+                            topic: 'cats',
+                            author: expect.any(String),
+                            body: expect.any(String),
+                            created_at: expect.any(String),
+                            votes: expect.any(Number),
+                            comment_count: expect.any(Number)
+                        })
+                    );
+                });
+            })
+        })
+        test("Query filter by topic, returns empty array for topic that exists with no article", () => {
+            return request(app)
+            .get('/api/articles?topic=paper')
+            .expect(200)
+            .then(({ body: { articles } }) => {
+                expect(articles).toBeInstanceOf(Array);
+                expect(articles).toHaveLength(0)
+            })
+        })
     })
     describe('ERROR Handling', () => {
         test('Invalid topic filter', () => {
@@ -262,6 +348,24 @@ describe('GET', () => {
                 const { msg } = response.body;
                 expect(msg).toBe('topic not found');
             });
+        })
+        test("can not be sorted by  items which are not columns in the table", () => {
+            return request(app)
+            .get('/api/articles?sortBy=username')
+            .expect(400)
+            .then((response) => {
+                const { msg } = response.body;
+                expect(msg).toBe("can not sort by this critera");
+            });  
+        })
+        test("can not be sorted by  items which are not columns in the table", () => {
+            return request(app)
+            .get('/api/articles?sortBy=article_id&&order=DELETE')
+            .expect(400)
+            .then((response) => {
+                const { msg } = response.body;
+                expect(msg).toBe("order must be either asc or desc");
+            });  
         })
     })
 })
@@ -302,13 +406,16 @@ describe('GET', () => {
                 expect(comments).toBeInstanceOf(Array);
                 expect(comments).toHaveLength(11)
                 comments.forEach((comment) => {
-                    expect.objectContaining({
-                        comment_id: expect.any(Number),
-                        votes: expect.any(Number),
-                        created_at: expect.any(Number),
-                        author: expect.any(String),
-                        body: expect.any(String)
-                    })
+                    expect(comment).toEqual(
+                        expect.objectContaining({
+                            comment_id: expect.any(Number),
+                            votes: expect.any(Number),
+                            article_id: expect.any(Number),
+                            created_at: expect.any(String),
+                            author: expect.any(String),
+                            body: expect.any(String)
+                        })
+                    )
                 })
             })
         })
@@ -420,7 +527,6 @@ describe('POST', () => {
                 });        
             })
         })
-
     })
 })
 
