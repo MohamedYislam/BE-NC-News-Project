@@ -126,6 +126,5 @@ exports.removeCommentById = (comment_id) => {
         if(comments.length === 0) {
             return Promise.reject({ status : 404, msg: 'comment not found'})
         }
-        return comments;
     })
 }
