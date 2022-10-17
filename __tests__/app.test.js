@@ -532,7 +532,7 @@ describe('POST', () => {
 
 
 describe('DELETE', () => {
-    describe('/api/comments/:comment_id', () => {
+    describe('DELETE /api/comments/:comment_id', () => {
         test('responds with a 204 status and an empty body', () => {
             return request(app)
             .delete('/api/comments/3')
@@ -556,6 +556,27 @@ describe('DELETE', () => {
             .then(({ body: {msg} }) => {
                 expect(msg).toBe('comment not found');
             });        
+        })
+    })
+})
+
+describe('GET', () => {
+    describe('GET /api', () => {
+        test('returns JSON with all the available endpoints of the api', () => {
+            return request(app)
+            .get('/api')
+            .then(({body : endpoints }) => {
+                expect(Object.keys(endpoints)).toEqual([
+                    'GET /api',
+                    'GET /api/topics',
+                    'GET /api/articles',
+                    'GET /api/users',
+                    'PATCH /api/articles/:article_id',
+                    'GET /api/articles/:article_id/comments',
+                    'POST /api/articles/:article_id/comments',
+                    'DELETE /api/comments/:comment_id'
+                  ])
+            })
         })
     })
 })
