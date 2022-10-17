@@ -77,7 +77,7 @@ describe('GET /api/articles/:article_id', () => {
             .get(`/api/articles/seven`)
             .expect(400)
             .then(({ body: {msg} }) => {
-                expect(msg).toBe('Invalid article id');
+                expect(msg).toBe('invalid id, check if numbers are used');
             });
         })
         test('status: 404 when user tries to request an article that does not exist', () => {
@@ -176,7 +176,7 @@ describe('PATCH /api/articles/:article_id', () => {
             .send({inc_votes: 1})
             .expect(400)
             .then(({ body: {msg} }) => {
-                expect(msg).toBe('Invalid article id');
+                expect(msg).toBe('invalid id, check if numbers are used');
             });
         })
         test('status: 404 when user tries to patch an article that does not exist', () => {
@@ -435,7 +435,7 @@ describe('GET', () => {
             .get('/api/articles/One/comments')            
             .expect(400)
             .then(({ body: {msg} }) => {
-                expect(msg).toBe('Invalid article id');
+                expect(msg).toBe('invalid id, check if numbers are used');
             });
         })
         test('status: 404 when user tries to request an article that does not exist', () => {
@@ -484,7 +484,7 @@ describe('POST', () => {
                 .send(newComment)
                 .expect(400)
                 .then(({ body: {msg} }) => {
-                    expect(msg).toBe('Invalid article id');
+                    expect(msg).toBe('invalid id, check if numbers are used');
                 });           
             })
             test('status 400, invalid object', () => {
@@ -531,3 +531,31 @@ describe('POST', () => {
 })
 
 
+describe('DELETE', () => {
+    describe('/api/comments/:comment_id', () => {
+        test('responds with a 204 status and an empty body', () => {
+            return request(app)
+            .delete('/api/comments/3')
+            .expect(204)
+            .then(({body }) => {
+                expect(body).toEqual({})
+            })
+        })
+        test('responds with a 400 error when given invalid comment_id', () => {
+            return request(app)
+            .delete('/api/comments/three')
+            .expect(400)
+            .then(({ body: {msg} }) => {
+                expect(msg).toBe('invalid id, check if numbers are used');
+            });        
+        })
+        test('responds with a 404 error when given invalid comment_id', () => {
+            return request(app)
+            .delete('/api/comments/7777')
+            .expect(404)
+            .then(({ body: {msg} }) => {
+                expect(msg).toBe('comment not found');
+            });        
+        })
+    })
+})
