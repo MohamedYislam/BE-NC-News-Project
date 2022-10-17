@@ -1,4 +1,5 @@
 const { selectTopics, selectArticleById, selectUsers, updateArticleById, selectArticles, selectArticleIdComments, insertArticleIdComment, removeCommentById } = require('../models/models.js')
+let jsonEndpoints = require('../endpoints.json');
 
 exports.getTopics = (req, res) => {
     selectTopics().then((topics) => {
@@ -55,9 +56,8 @@ exports.postArticleIdComment = (req, res, next) => {
     insertArticleIdComment(comment, article_id, username).then((comment) => {
         res.status(201).send(comment);
     })
-    .catch((err) =>  {
-        next(err)
-    })
+    .catch((err) => next(err)
+)
 }
 
 exports.deleteCommentById = (req, res, next) => {
@@ -69,4 +69,8 @@ exports.deleteCommentById = (req, res, next) => {
     .catch((err) => {
         next(err)
     })
+}
+
+exports.getEndPoints = (req, res) => {
+    res.status(200).send(jsonEndpoints)
 }
