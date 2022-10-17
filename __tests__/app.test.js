@@ -272,7 +272,6 @@ describe('GET', () => {
             .get('/api/articles?sortBy=article_id&&order=asc')
             .expect(200)
                 .then(({ body: { articles } }) => {
-                    console.log(articles, "<--article")
                 expect(articles).toBeSortedBy('article_id')
             });
         })

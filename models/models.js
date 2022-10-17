@@ -37,9 +37,9 @@ exports.updateArticleById = (article_id, inc_votes) => {
          return Promise.reject({ status: 400, msg: 'bad request, object sent may be invalid'});
     }
     return db.query(`
-    UPDATE articles
-    SET votes = votes + $2  WHERE article_id = $1
-    RETURNING *;`, [article_id, inc_votes])
+        UPDATE articles
+        SET votes = votes + $2  WHERE article_id = $1
+        RETURNING *;`, [article_id, inc_votes])
     .then(({rows : updatedArticle}) => {
         if(updatedArticle.length == 0) {
             return Promise.reject({ status : 404, msg: 'Article not found'})
@@ -47,15 +47,9 @@ exports.updateArticleById = (article_id, inc_votes) => {
         return updatedArticle[0];
     })
 }
-//change fundamental method of query and combining with with comment
-//export the function so you dont need to copy and paste it
-// add tests for all columns including comment count
 
-// see how to add test for topics that exist but no article a
-//tidy up code, 
-// add invaid query, choose topic article_id or..
+
 exports.selectArticles = (articleQuery) => {
-    console.log(articleQuery, "<--articleQuery")
     validTopic = ['mitch', 'cats', 'paper']
     validSortBy = ['article_id', 'title', 'topic', 'author', 'body', 'created_at', 'votes', 'comment_count']
     validOrder = ['asc', 'desc']
