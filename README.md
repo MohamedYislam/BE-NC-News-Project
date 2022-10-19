@@ -41,25 +41,25 @@ First clone the repo by copying the code below into your terminal
     
 The dependencies used are:
 
-    -Jest
-    -Jest-extended
-    -Jest-sorted
-    -Express
-    -Supertest
-    -pg
-    -pg-format
+*  Jest
+*  Jest-extended
+*  Jest-sorted
+*  Express
+*  Supertest
+*  pg
+*  pg-format
 
-To add them all, in the terminal type
+To install them all, in the terminal type
 
     npm install
 
 
 Then create 2 new files
 
- a **.env.test** file containing
+  **.env.test** file containing
 
     PGDATABASE=nc_news_test
-and a **.env.development** file with
+and  **.env.development** file with
 
     PGDATABASE=nc_news
 
