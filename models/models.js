@@ -50,7 +50,7 @@ exports.updateArticleById = (article_id, inc_votes) => {
 
 
 exports.selectArticles = (articleQuery) => {
-    validTopic = ['mitch', 'cats', 'paper']
+    validTopic = ['mitch', 'cats', 'paper', "coding", "cooking", "football"]
     validSortBy = ['article_id', 'title', 'topic', 'author', 'body', 'created_at', 'votes', 'comment_count']
     validOrder = ['asc', 'desc']
 
