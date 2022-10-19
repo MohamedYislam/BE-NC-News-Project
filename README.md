@@ -2,7 +2,8 @@
 
 ------------------------
 
-NC news is a RESTful API designed to be the backend of a news app with similar fucntionality to social media sites and forums. It has been built with Node.js and Express, PostgreSQL was used to access and manipulate the database, and heroku used to host the app.
+NC news is a RESTful API designed to be the backend of a news app with similar functionality to social media sites and forums. It has been built with Node.js and Express.
+PostgreSQL was used to access and manipulate the database, and heroku used to host the app.
 
 The API can 
 -   Retrieve articles, topics, users and comments
@@ -53,23 +54,22 @@ To add them all, in the terminal type
     npm install
 
 
-Then add two new files
+Then create 2 new files
 
- an **.env.test** file containing
+ a **.env.test** file containing
 
     PGDATABASE=nc_news_test
-and a **.env.development** file
+and a **.env.development** file with
 
     PGDATABASE=nc_news
 
 
 
-
-Following this to create and seed the database run
+To create and seed the database in the terminal run
 
     npm run setup-dbs
     npm run seed
 
+To run the tests
 
-
-The minimimum requirement to run this database is
+    npm run test
