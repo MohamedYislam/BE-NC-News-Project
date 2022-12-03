@@ -39,6 +39,8 @@ Some examples:
 First clone the repo by copying the code below into your terminal
 
     git clone https://github.com/MohamedYislam/backend-news-project
+
+**A minimum version of Node v18.7.0 and PSQL v14.5 should be used** 
     
 The dependencies used are:
 
