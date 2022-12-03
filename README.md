@@ -2,15 +2,15 @@
 
 ------------------------
 
-NC news is a RESTful API designed to be the backend of a news app with similar functionality to social media sites and forums. It has been built with Node.js and Express.
+NC News is a RESTful API designed to be the backend of a news app with similar functionality to social media sites and forums. It has been built with Node.js and Express.
 PostgreSQL was used to access and manipulate the database, and Cylic used to host the app.
 
 The API can 
 -   Retrieve articles, topics, users and comments
 -   Querying articles and sorting them by features such as date the article was created, the user who posted the article,  total votes and comment count
-- Filter by topic name
-- Vote on articles
-- Post new coments or Delete existing ones
+-   Filter by topic name
+-   Vote on articles
+-   Post new comments or delete existing ones
 
 
 -------
@@ -28,8 +28,6 @@ Some examples:
 - https://news-app-msy.cyclic.app/api/articles?sortBy=comment_count&&order=desc
 
 
-
-
 ----
 
 
@@ -44,10 +42,6 @@ First clone the repo by copying the code below into your terminal
 
 **A minimum version of Node v18.7.0 and PSQL v14.5 should be used**
 
-    
-     
-      
-      
     
 The dependencies used are:
 
