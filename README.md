@@ -3,7 +3,7 @@
 ------------------------
 
 NC news is a RESTful API designed to be the backend of a news app with similar functionality to social media sites and forums. It has been built with Node.js and Express.
-PostgreSQL was used to access and manipulate the database, and heroku used to host the app.
+PostgreSQL was used to access and manipulate the database, and Cylic used to host the app.
 
 The API can 
 -   Retrieve articles, topics, users and comments
@@ -20,8 +20,6 @@ The API can
 List of all the endpoints :  https://news-app-msy.cyclic.app/api
 
 Some examples: 
-
-- https://news-app-msy.herokuapp.com/api/articles/12/comments
 
 - https://news-app-msy.cyclic.app/api/articles/12/comments
 
