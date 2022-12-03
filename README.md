@@ -17,14 +17,17 @@ The API can
 
 ## Hosted Version
 
-List of all the endpoints :  https://news-app-msy.herokuapp.com/api/
+List of all the endpoints :  https://news-app-msy.cyclic.app/api
 
 Some examples: 
+
 - https://news-app-msy.herokuapp.com/api/articles/12/comments
 
-- https://news-app-msy.herokuapp.com/api/articles?topic=coding
+- https://news-app-msy.cyclic.app/api/articles/12/comments
 
-- https://news-app-msy.herokuapp.com/api/articles?sortBy=comment_count&&order=desc
+- https://news-app-msy.cyclic.app/api/articles?topic=coding
+
+- https://news-app-msy.cyclic.app/api/articles?sortBy=comment_count&&order=desc
 
 
 
@@ -59,7 +62,9 @@ Then create 2 new files
   **.env.test** file containing
 
     PGDATABASE=nc_news_test
-and  **.env.development** file with
+and  
+
+  **.env.development** file with
 
     PGDATABASE=nc_news
 
